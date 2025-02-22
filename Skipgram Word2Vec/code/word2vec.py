@@ -81,6 +81,31 @@ def neg_sampling_loss_and_gradient(
 
     ### YOUR CODE HERE (~10 Lines)
     ### Please use your implementation of sigmoid in here.
+    
+    # Initialize loss and gradients
+    loss = 0.0
+    grad_input_vec = np.zeros(input_vector.shape)
+    grad_output_vecs = np.zeros(output_vectors.shape)
+
+    true_output_vec = output_vectors[output_word_idx]
+    true_score = np.dot(input_vector, true_output_vec)
+    true_prob = sigmoid(true_score)
+    loss += -np.log(true_prob)
+
+    # Gradient for true output word
+    grad_input_vec += (true_prob - 1) * true_output_vec
+    grad_output_vecs[output_word_idx] += (true_prob - 1) * input_vector
+
+    # Negative samples
+    for neg_idx in neg_sample_word_indices:
+        neg_output_vec = output_vectors[neg_idx]
+        neg_score = np.dot(input_vector, neg_output_vec)
+        neg_prob = sigmoid(-neg_score)  
+        loss += -np.log(neg_prob)
+
+        # Gradient for negative samples
+        grad_input_vec += (1 - neg_prob) * neg_output_vec
+        grad_output_vecs[neg_idx] += (1 - neg_prob) * input_vector
 
     ### END YOUR CODE
 
