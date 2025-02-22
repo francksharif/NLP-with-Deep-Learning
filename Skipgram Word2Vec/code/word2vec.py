@@ -38,17 +38,18 @@ def naive_softmax_loss_and_gradient(
                     (dL / dU)
     """
 
-    ### YOUR CODE HERE (~6-8 Lines)
-
-    ### Please use the provided softmax function (imported earlier in this file)
-    ### This numerically stable implementation helps you avoid issues pertaining
-    ### to integer overflow.
-
     # loss
+    scores = np.dot(output_vectors, input_vector)
+    exp_scores = np.exp(scores)
+    norm_factor = np.sum(exp_scores)
+    softmax_probs = exp_scores / norm_factor
+    loss = -scores[output_word_idx] + np.log(norm_factor)
 
     # grad_input_vec, grad_output_vecs
-
-    ### END YOUR CODE
+    grad_input_vec = -output_vectors[output_word_idx] + np.dot(softmax_probs, output_vectors)
+    grad_output_vecs = np.outer(softmax_probs, input_vector)
+    grad_output_vecs[output_word_idx] -= input_vector
+  
 
     return loss, grad_input_vec, grad_output_vecs
 
