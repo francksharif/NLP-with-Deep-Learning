@@ -147,9 +147,24 @@ def skipgram(current_input_word, window_size, output_words, word2_ind,
     grad_input_vecs = np.zeros(input_vectors.shape)
     grad_output_vecs = np.zeros(output_vectors.shape)
 
-    ### YOUR CODE HERE (~8 Lines)
+    # Get the index of the current input word
+    input_word_idx = word2_ind[current_input_word]
+    input_vector = input_vectors[input_word_idx]
 
-    ### END YOUR CODE
+    # Loop over all context words
+    for output_word in output_words:
+        # Get the index of the output word
+        output_word_idx = word2_ind[output_word]
+
+        # Compute loss and gradients for the current context word
+        curr_loss, curr_grad_input, curr_grad_output = word2vec_loss_and_gradient(
+            input_vector, output_word_idx, output_vectors, dataset
+        )
+
+        # Accumulate loss and gradients
+        loss += curr_loss
+        grad_input_vecs[input_word_idx] += curr_grad_input
+        grad_output_vecs += curr_grad_output
 
     return loss, grad_input_vecs, grad_output_vecs
 
